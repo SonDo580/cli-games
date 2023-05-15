@@ -4,6 +4,14 @@ MAX_NUM_GUESSES = 6
 MIN = 1
 MAX = 20
 
+def take_guess():
+    while True:
+        try:
+            guess = int(input("Take a guess: "))
+            return guess
+        except ValueError:
+            print('Please enter a valid number!')
+
 name = input("Hello, what's your name? ")
 
 print(f"Well, {name}, I'm thinking of a number between {MIN} and {MAX}")
@@ -11,7 +19,7 @@ rand = random.randint(MIN, MAX)
 
 correct = False
 for i in range(MAX_NUM_GUESSES):
-    guess = int(input("Take a guess: "))
+    guess = take_guess()
 
     if guess > rand:
         print("Too high!")
@@ -24,6 +32,3 @@ for i in range(MAX_NUM_GUESSES):
 
 if not correct:
      print(f"You lost! The number I was thinking of was {rand}.")
-
-
-
