@@ -10,7 +10,7 @@ def take_guess():
             guess = int(input("Take a guess: "))
             return guess
         except ValueError:
-            print('Please enter a valid number!')
+            print('Please enter an interger!')
 
 name = input("Hello, what's your name? ")
 
