@@ -26,16 +26,36 @@ def take_guess(already_guessed):
             return guess
 
 
-def get_result(secret_word, current, missed_letters, guess):
+def get_feedback(secret_word, current, missed_letters, guess):
+    missed = False
     if guess not in secret_word:
         missed_letters += guess
+        missed = True
     else:
         for i in range(len(secret_word)):
             if secret_word[i] == guess:
                 current[i] = guess
-    return (missed_letters, current)
+    return (missed, missed_letters, current)
 
 
 def display_feedback(missed_letters, current):
     print(f'Missed letters: {missed_letters}')
-    print(f'Current: {current}')
+    print(f'Current: {"".join(current)}')
+
+
+def game():
+    secret_word = get_random_word(WORDS)
+    blanks = ['_'] * len(secret_word)
+    missed_letters = ''
+    current = blanks
+    already_guessed = []
+
+    while True:
+        guess = take_guess(already_guessed)
+        already_guessed.append(guess)
+        missed, missed_letters, current = get_feedback(
+            secret_word, current, missed_letters, guess)
+        display_feedback(missed_letters, current)
+
+
+game()
