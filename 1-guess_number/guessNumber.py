@@ -4,6 +4,7 @@ MAX_NUM_GUESSES = 6
 MIN = 1
 MAX = 20
 
+
 def take_guess():
     while True:
         try:
@@ -11,6 +12,7 @@ def take_guess():
             return guess
         except ValueError:
             print('Please enter an interger!')
+
 
 name = input("Hello, what's your name? ")
 
@@ -31,4 +33,4 @@ for i in range(MAX_NUM_GUESSES):
         break
 
 if not correct:
-     print(f"You lost! The number I was thinking of was {rand}.")
+    print(f"You lost! The number I was thinking of was {rand}.")
