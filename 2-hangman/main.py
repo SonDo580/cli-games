@@ -5,7 +5,6 @@ from hangman_pics import HANGMAN_PICS
 from secret_words import WORDS
 
 all_letters = string.ascii_lowercase
-max_num_guesses = len(HANGMAN_PICS)
 
 
 def get_random_word(words):
@@ -43,19 +42,33 @@ def display_feedback(missed_letters, current):
     print(f'Current: {"".join(current)}')
 
 
+def draw_hangman(pic_index):
+    print(HANGMAN_PICS[pic_index])
+
+
 def game():
     secret_word = get_random_word(WORDS)
     blanks = ['_'] * len(secret_word)
     missed_letters = ''
     current = blanks
     already_guessed = []
+    pic_index = 0
 
     while True:
         guess = take_guess(already_guessed)
         already_guessed.append(guess)
         missed, missed_letters, current = get_feedback(
             secret_word, current, missed_letters, guess)
+
+        if missed:
+            pic_index += 1
+        if pic_index == len(HANGMAN_PICS) - 1:
+            break
+
+        draw_hangman(pic_index)
         display_feedback(missed_letters, current)
+
+    print('Game over')
 
 
 game()
