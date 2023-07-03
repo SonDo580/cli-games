@@ -1,4 +1,11 @@
-BOARD = [[''] * 3] * 3
+BOARD = [[' '] * 3] * 3
+
+
+def draw_board(board):
+    for i in range(len(board)):
+        print('|'.join(board[i]))
+        if i < len(board) - 1:
+            print('-+-+-')
 
 
 def get_marks():
@@ -15,9 +22,11 @@ def get_marks():
 
 
 def game():
+    board = BOARD
     print('Welcome to Tic-Tac-Toe!')
     user_mark, computer_mark = get_marks()
     print('The computer will go first.')
+    draw_board(board)
 
 
 game()
