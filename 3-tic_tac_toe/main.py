@@ -1,3 +1,6 @@
+BOARD = [[''] * 3] * 3
+
+
 def get_marks():
     while True:
         user_mark = input('Do you want to be X or O? ').lower()
@@ -12,8 +15,9 @@ def get_marks():
 
 
 def game():
-    print('Welcome to Tic-Tac-Toe')
+    print('Welcome to Tic-Tac-Toe!')
     user_mark, computer_mark = get_marks()
+    print('The computer will go first.')
 
 
 game()
