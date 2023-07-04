@@ -1,31 +1,58 @@
-BOARD = [[' '] * 3] * 3
+import random
+
+SIZE = 3
+
+
+def create_board(size):
+    board = []
+    for i in range(size):
+        board.append([])
+        for j in range(size):
+            board[i].append(' ')
+    return board
 
 
 def draw_board(board):
-    for i in range(len(board)):
+    for i in range(SIZE):
         print('|'.join(board[i]))
-        if i < len(board) - 1:
+        if i < SIZE - 1:
             print('-+-+-')
 
 
 def get_marks():
     while True:
-        user_mark = input('Do you want to be X or O? ').lower()
-        if user_mark == 'x':
-            computer_mark = 'o'
-        elif user_mark == 'o':
-            computer_mark = 'x'
+        user_mark = input('Do you want to be X or O? ').upper()
+        if user_mark == 'X':
+            computer_mark = 'O'
+        elif user_mark == 'O':
+            computer_mark = 'X'
         else:
             print('Please enter X or O!')
             continue
         return (user_mark, computer_mark)
 
 
+def get_random_int(min, max):
+    return random.randint(min, max)
+
+
+def computer_move(board, computer_mark):
+    while True:
+        row = get_random_int(0, SIZE - 1)
+        col = get_random_int(0, SIZE - 1)
+
+        if board[row][col] == ' ':
+            board[row][col] = computer_mark
+            return
+
+
 def game():
-    board = BOARD
     print('Welcome to Tic-Tac-Toe!')
+    board = create_board(SIZE)
     user_mark, computer_mark = get_marks()
+
     print('The computer will go first.')
+    computer_move(board, computer_mark)
     draw_board(board)
 
 
