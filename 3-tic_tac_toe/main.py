@@ -3,11 +3,11 @@ import random
 SIZE = 3
 
 
-def create_board(size):
+def create_board():
     board = []
-    for i in range(size):
+    for i in range(SIZE):
         board.append([])
-        for j in range(size):
+        for j in range(SIZE):
             board[i].append(' ')
     return board
 
@@ -16,7 +16,7 @@ def draw_board(board):
     for i in range(SIZE):
         print('|'.join(board[i]))
         if i < SIZE - 1:
-            print('-+-+-')
+            print('+'.join('-' * SIZE))
 
 
 def get_marks():
@@ -48,7 +48,7 @@ def computer_move(board, computer_mark):
 
 def game():
     print('Welcome to Tic-Tac-Toe!')
-    board = create_board(SIZE)
+    board = create_board()
     user_mark, computer_mark = get_marks()
 
     print('The computer will go first.')
