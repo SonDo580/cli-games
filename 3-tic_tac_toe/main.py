@@ -46,13 +46,32 @@ def computer_move(board, computer_mark):
             return
 
 
+def user_move(board, user_mark):
+    print('What is your next move?')
+    while True:
+        try:
+            row = int(input("Enter row index: "))
+            col = int(input("Enter column index: "))
+
+            if board[row][col] != ' ':
+                print('Please choose another cell!')
+                continue
+
+            board[row][col] = user_mark
+            return
+        except ValueError:
+            print('Please enter an interger!')
+
+
 def game():
     print('Welcome to Tic-Tac-Toe!')
     board = create_board()
     user_mark, computer_mark = get_marks()
-
     print('The computer will go first.')
+
     computer_move(board, computer_mark)
+    draw_board(board)
+    user_move(board, user_mark)
     draw_board(board)
 
 
