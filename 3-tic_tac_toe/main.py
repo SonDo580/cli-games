@@ -22,15 +22,15 @@ def draw_board(board):
 
 def get_marks():
     while True:
-        user_mark = input('Do you want to be X or O? ').upper()
-        if user_mark == 'X':
+        player_mark = input('Do you want to be X or O? ').upper()
+        if player_mark == 'X':
             computer_mark = 'O'
-        elif user_mark == 'O':
+        elif player_mark == 'O':
             computer_mark = 'X'
         else:
             print('Please enter X or O!')
             continue
-        return (user_mark, computer_mark)
+        return (player_mark, computer_mark)
 
 
 def check_horizontal(board, mark, row, col):
@@ -130,17 +130,20 @@ def computer_move(board, computer_mark):
             return check_board(board, computer_mark, row, col)
 
 
-def user_move(board, user_mark):
+def player_move(board, player_mark):
     print('What is your next move?')
     while True:
         try:
             row = int(input("Enter row index: "))
             col = int(input("Enter column index: "))
+
             if board[row][col] != ' ':
                 print('Please choose another cell!')
                 continue
-            board[row][col] = user_mark
-            return check_board(board, user_mark, row, col)
+
+            board[row][col] = player_mark
+            return check_board(board, player_mark, row, col)
+
         except ValueError:
             print('Please enter an interger!')
 
@@ -148,12 +151,12 @@ def user_move(board, user_mark):
 def game():
     print('Welcome to Tic-Tac-Toe!')
     board = create_board()
-    user_mark, computer_mark = get_marks()
+    player_mark, computer_mark = get_marks()
     print('The computer will go first.')
 
     computer_move(board, computer_mark)
     draw_board(board)
-    user_move(board, user_mark)
+    player_move(board, player_mark)
     draw_board(board)
 
 
