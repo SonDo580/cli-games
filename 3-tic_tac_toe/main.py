@@ -2,6 +2,7 @@ import random
 
 SIZE = 3
 NUM_WIN = 3
+MAX_TURN = SIZE ** 2
 
 
 def create_board():
@@ -121,16 +122,17 @@ def get_random_int(min, max):
     return random.randint(min, max)
 
 
-def computer_move(board, computer_mark):
+def computer_move(board, computer_mark, turn_num):
     while True:
         row = get_random_int(0, SIZE - 1)
         col = get_random_int(0, SIZE - 1)
         if board[row][col] == ' ':
             board[row][col] = computer_mark
-            return check_board(board, computer_mark, row, col)
+            turn_num += 1
+            return (check_board(board, computer_mark, row, col), turn_num)
 
 
-def player_move(board, player_mark):
+def player_move(board, player_mark, turn_num):
     print('What is your next move?')
     while True:
         try:
@@ -142,22 +144,47 @@ def player_move(board, player_mark):
                 continue
 
             board[row][col] = player_mark
-            return check_board(board, player_mark, row, col)
+            turn_num += 1
+            return (check_board(board, player_mark, row, col), turn_num)
 
         except ValueError:
             print('Please enter an interger!')
 
 
-def game():
-    print('Welcome to Tic-Tac-Toe!')
+def turn(board, computer_mark, player_mark, turn_num):
+    computer_win, turn_num = computer_move(board, computer_mark, turn_num)
+    draw_board(board)
+    if turn_num == MAX_TURN:
+        return (computer_win, False, turn_num)
+
+    player_win, turn_num = player_move(board, player_mark, turn_num)
+    draw_board(board)
+    return (computer_win, player_win, turn_num)
+
+
+def round():
     board = create_board()
+    turn_num = 0
     player_mark, computer_mark = get_marks()
     print('The computer will go first.')
 
-    computer_move(board, computer_mark)
-    draw_board(board)
-    player_move(board, player_mark)
-    draw_board(board)
+    computer_win = False
+    player_win = False
+    while not computer_win and not player_win and turn_num < MAX_TURN:
+        computer_win, player_win, turn_num = turn(
+            board, computer_mark, player_mark, turn_num)
+
+    if computer_win:
+        print('You lost')
+    elif player_win:
+        print('You won')
+    else:
+        print('Tie')
+
+
+def game():
+    print('Welcome to Tic-Tac-Toe!')
+    round()
 
 
 game()
