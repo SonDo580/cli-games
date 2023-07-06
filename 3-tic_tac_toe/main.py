@@ -155,7 +155,7 @@ def player_move(board, player_mark, turn_num):
 def turn(board, computer_mark, player_mark, turn_num):
     computer_win, turn_num = computer_move(board, computer_mark, turn_num)
     draw_board(board)
-    if turn_num == MAX_TURN:
+    if computer_win or turn_num == MAX_TURN:
         return (computer_win, False, turn_num)
 
     player_win, turn_num = player_move(board, player_mark, turn_num)
