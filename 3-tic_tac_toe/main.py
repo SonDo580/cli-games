@@ -174,10 +174,14 @@ def round():
         computer_win, player_win, turn_num = turn(
             board, computer_mark, player_mark, turn_num)
 
+    print_result(computer_win, player_win)
+
+
+def print_result(computer_win, player_win):
     if computer_win:
-        print('You lost')
+        print('You lost!')
     elif player_win:
-        print('You won')
+        print('You won!')
     else:
         print('Tie')
 
