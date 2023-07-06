@@ -19,6 +19,7 @@ def draw_board(board):
         print('|'.join(board[i]))
         if i < SIZE - 1:
             print('+'.join('-' * SIZE))
+    print('-' * 30)
 
 
 def get_marks():
@@ -170,7 +171,7 @@ def round():
 
     computer_win = False
     player_win = False
-    while not computer_win and not player_win and turn_num < MAX_TURN:
+    while (not computer_win) and (not player_win) and (turn_num < MAX_TURN):
         computer_win, player_win, turn_num = turn(
             board, computer_mark, player_mark, turn_num)
 
@@ -186,9 +187,21 @@ def print_result(computer_win, player_win):
         print('Tie')
 
 
+def play_again():
+    while True:
+        answer = input("Press 'y' to play again, 'n' to cancel: ").lower()
+        if answer == 'y':
+            return True
+        elif answer == 'n':
+            return False
+
+
 def game():
     print('Welcome to Tic-Tac-Toe!')
-    round()
+    while True:
+        round()
+        if not play_again():
+            return
 
 
 game()
