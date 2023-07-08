@@ -1,8 +1,7 @@
 import random
 import string
 
-from hangman_pics import HANGMAN_PICS
-from secret_words import WORDS
+from constants import HANGMAN_PICS, WORDS
 
 all_letters = string.ascii_lowercase
 
