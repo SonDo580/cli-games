@@ -1,6 +1,6 @@
 # InventWithPython Games
 
-- Making games with Python
+- Making CLI games with Python
 - From: https://inventwithpython.com/invent4thed/
 
 # How to play
