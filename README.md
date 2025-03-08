@@ -1,14 +1,18 @@
-# InventWithPython Games
+# CLI Games
 
-- Making CLI games with Python
-- From: https://inventwithpython.com/invent4thed/
+A collection of CLI games based on the book [_Invent Your Own Computer Games with Python_](https://inventwithpython.com/invent4thed/) (with additional refactoring and improvements).
 
-# How to play
+## Requirements
 
-- cd into a directogy
-- run: python main.py
+- Python **3.10+** (for built-in type annotations)
 
-# Note
+## How to Play
 
-- I implement all of the games myself
-- Only after finishing each one, I will check the author's code to furthur optimize my version
+1. Navigate to the game directory:
+   ```sh
+   cd <game-directory>
+   ```
+2. Run the game:
+   ```sh
+   python3 main.py
+   ```
