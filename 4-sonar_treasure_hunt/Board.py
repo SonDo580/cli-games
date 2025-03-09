@@ -6,9 +6,9 @@ from constants import NUM_ROWS, NUM_COLUMNS, NUM_CHESTS, OCEAN_WAVES, SONAR_RANG
 
 class Board:
     def __init__(self):
-        self.board = self.__get_new_board()
-        self.chest_set = self.__get_chest_set()
-        self._max_distance = math.ceil(math.sqrt(NUM_ROWS**2 + NUM_COLUMNS**2))
+        self.board: list[list[str]] = self.__get_new_board()
+        self.chest_set: set[tuple[int, int]] = self.__get_chest_set()
+        self._max_distance: int = math.ceil(math.sqrt(NUM_ROWS**2 + NUM_COLUMNS**2))
 
     def __get_new_board(self) -> list[list[str]]:
         """Return initial board state"""
@@ -23,7 +23,7 @@ class Board:
         """Return the set of chest coordinates"""
         chest_set: set[tuple[int, int]] = set()
         while len(chest_set) < NUM_CHESTS:
-            new_chest = (
+            new_chest: tuple[int, int] = (
                 random.randint(0, NUM_ROWS - 1),
                 random.randint(0, NUM_COLUMNS - 1),
             )
@@ -41,9 +41,9 @@ class Board:
         Collect the treasure chests as they are found (remove from chest set).
         Return the distance from sonar to the closest chest.
         """
-        smallest_distance = self._max_distance
+        smallest_distance: int = self._max_distance
         for c_row, c_column in self.chest_set:
-            distance = self.__get_distance(c_row, c_column, row, col)
+            distance: int = self.__get_distance(c_row, c_column, row, col)
             if distance < smallest_distance:
                 smallest_distance = distance
 

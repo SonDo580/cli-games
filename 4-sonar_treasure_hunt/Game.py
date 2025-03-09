@@ -24,7 +24,7 @@ class Game:
 
     def __loop(self):
         while True:
-            num_sonar_devices = NUM_SONAR_DEVICES
+            num_sonar_devices: int = NUM_SONAR_DEVICES
             board = Board()
             previous_move_set: set[tuple[int, int]] = set()
             self._renderer.draw_board(board)
@@ -38,7 +38,7 @@ class Game:
 
                 row, col = self.__get_move(previous_move_set)
                 previous_move_set.add((row, col))
-                smallest_distance = board.make_move(row, col)
+                smallest_distance: int = board.make_move(row, col)
 
                 # If a sunken chest is found,
                 # update all sonar devices on the map (find the next closest chest)
@@ -73,7 +73,7 @@ class Game:
     def __get_move(self, previous_move_set: set[tuple[int, int]]) -> tuple[int, int]:
         """Let player enter their move"""
         while True:
-            move = input(
+            move: str = input(
                 "Where do you want to put the next sonar device?\n"
                 + f"(0-{NUM_ROWS - 1} 0-{NUM_COLUMNS - 1}) (or type 'q' to quit): "
             ).strip()
