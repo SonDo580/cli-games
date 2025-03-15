@@ -20,4 +20,4 @@ class Board:
 
     @staticmethod
     def is_on_board(row: int, col: int) -> bool:
-        return 0 <= row <= SIZE and 0 <= col <= SIZE
+        return 0 <= row < SIZE and 0 <= col < SIZE
