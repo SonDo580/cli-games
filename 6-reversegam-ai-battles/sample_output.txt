@@ -1,0 +1,50 @@
+```
+=========================
+X algorithm: Corner -> Side -> Highest score
+O algorithm: Corner -> Highest score
+
+X wins: 78/250 (31.2%)
+O wins: 164/250 (65.6%)
+Ties: 8/250 (3.2%)
+=========================
+=========================
+X algorithm: Corner -> Side -> Highest score
+O algorithm: Random
+
+X wins: 178/250 (71.2%)
+O wins: 66/250 (26.4%)
+Ties: 6/250 (2.4%)
+=========================
+=========================
+X algorithm: Corner -> Side -> Highest score
+O algorithm: Lowest score
+
+X wins: 197/250 (78.8%)
+O wins: 45/250 (18.0%)
+Ties: 8/250 (3.2%)
+=========================
+=========================
+X algorithm: Corner -> Highest score
+O algorithm: Random
+
+X wins: 194/250 (77.6%)
+O wins: 44/250 (17.6%)
+Ties: 12/250 (4.8%)
+=========================
+=========================
+X algorithm: Corner -> Highest score
+O algorithm: Lowest score
+
+X wins: 207/250 (82.8%)
+O wins: 41/250 (16.4%)
+Ties: 2/250 (0.8%)
+=========================
+=========================
+X algorithm: Random
+O algorithm: Lowest score
+
+X wins: 150/250 (60.0%)
+O wins: 87/250 (34.8%)
+Ties: 13/250 (5.2%)
+=========================
+```

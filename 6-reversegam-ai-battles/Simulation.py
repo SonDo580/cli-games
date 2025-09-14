@@ -1,4 +1,6 @@
 import random
+from enum import Enum
+from typing import Callable
 
 from constants import (
     NUM_ROUNDS,
@@ -12,24 +14,85 @@ from _types import TTile, TBoard, TScoreDict, TPosition
 from Board import Board
 
 
+class MoveAlgorithmName(Enum):
+    CORNER_SIDE_HIGHEST = "Corner -> Side -> Highest score"
+    CORNER_HIGHEST = "Corner -> Highest score"
+    RANDOM = "Random"
+    LOWEST = "Lowest score"
+
+
+MOVE_ALGORITHM_NAMES = [
+    MoveAlgorithmName.CORNER_SIDE_HIGHEST,
+    MoveAlgorithmName.CORNER_HIGHEST,
+    MoveAlgorithmName.RANDOM,
+    MoveAlgorithmName.LOWEST,
+]
+
+
+TMoveAlgorithm = Callable[[TBoard, TTile], TPosition]
+
+
 class Simulation:
     def __init__(self):
-        pass
+        self._move_algorithm_dict: dict[MoveAlgorithmName, TMoveAlgorithm] = {
+            MoveAlgorithmName.CORNER_SIDE_HIGHEST: self.__get_corner_then_side_then_highest_score_move,
+            MoveAlgorithmName.CORNER_HIGHEST: self.__get_corner_then_highest_score_move,
+            MoveAlgorithmName.RANDOM: self.__get_random_move,
+            MoveAlgorithmName.LOWEST: self.__get_lowest_score_move,
+        }
+
+        self._move_algorithm_name_pairs: list[
+            tuple[MoveAlgorithmName, MoveAlgorithmName]
+        ] = self.__generate_move_algorithm_name_pairs()
+
+        self._move_algorithm_per_player: dict[TTile, TMoveAlgorithm | None] = {
+            X: None,
+            O: None,
+        }
 
     def start(self) -> None:
         print("Welcome to Reversegam!")
-        x_wins = o_wins = 0
 
-        for _ in range(NUM_ROUNDS):
-            score_dict = self.__round()
-            self.__print_scores(score_dict, X, O)
+        for algorithm_1_name, algorithm_2_name in self._move_algorithm_name_pairs:
+            print("=========================")
+            self.__init_move_algorithms_for_players(algorithm_1_name, algorithm_2_name)
 
-            if score_dict[X] > score_dict[O]:
-                x_wins += 1
-            elif score_dict[O] > score_dict[X]:
-                o_wins += 1
+            x_wins = o_wins = 0
+            for i in range(NUM_ROUNDS):
+                score_dict = self.__round()
+                if score_dict[X] > score_dict[O]:
+                    x_wins += 1
+                elif score_dict[O] > score_dict[X]:
+                    o_wins += 1
 
-        self.__print_simulation_result(x_wins, o_wins)
+                print(f"\rRound {i + 1}/{NUM_ROUNDS}", end="", flush=True)
+
+            self.__print_simulation_result(x_wins, o_wins)
+            print("=========================")
+
+    def __generate_move_algorithm_name_pairs(
+        self,
+    ) -> list[tuple[MoveAlgorithmName, MoveAlgorithmName]]:
+        pairs: list[tuple[MoveAlgorithmName, MoveAlgorithmName]] = []
+        for i in range(len(MOVE_ALGORITHM_NAMES) - 1):
+            for j in range(i + 1, len(MOVE_ALGORITHM_NAMES)):
+                pairs.append((MOVE_ALGORITHM_NAMES[i], MOVE_ALGORITHM_NAMES[j]))
+        return pairs
+
+    def __init_move_algorithms_for_players(
+        self, algorithm_1_name: MoveAlgorithmName, algorithm_2_name: MoveAlgorithmName
+    ) -> None:
+        self._move_algorithm_per_player[X] = self._move_algorithm_dict[algorithm_1_name]
+        self._move_algorithm_per_player[O] = self._move_algorithm_dict[algorithm_2_name]
+
+        print(f"X algorithm: {algorithm_1_name.value}")
+        print(f"O algorithm: {algorithm_2_name.value}")
+
+    def __get_move_algorithm_for_player(self, tile: TTile) -> TMoveAlgorithm:
+        return (
+            self._move_algorithm_per_player[tile]
+            or self._move_algorithm_dict[MoveAlgorithmName.RANDOM]
+        )
 
     def __print_simulation_result(self, x_wins: int, o_wins: int) -> None:
         """Print the result of all the rounds"""
@@ -38,7 +101,7 @@ class Simulation:
         ties = NUM_ROUNDS - x_wins - o_wins
         ties_percent = round(100 - x_wins_percent - o_wins_percent, 1)
 
-        print("==============================")
+        print()
         print(f"X wins: {x_wins}/{NUM_ROUNDS} ({x_wins_percent}%)")
         print(f"O wins: {o_wins}/{NUM_ROUNDS} ({o_wins_percent}%)")
         print(f"Ties: {ties}/{NUM_ROUNDS} ({ties_percent}%)")
@@ -64,9 +127,8 @@ class Simulation:
 
             if turn == player_1_tile:
                 if len(player_1_valid_moves) > 0:
-                    player_1_move: TPosition = self.__get_computer_move(
-                        board, player_1_tile
-                    )
+                    move_algorithm = self.__get_move_algorithm_for_player(player_1_tile)
+                    player_1_move: TPosition = move_algorithm(board, player_1_tile)
                     self.__make_move(
                         board, player_1_tile, player_1_move[0], player_1_move[1]
                     )
@@ -74,9 +136,8 @@ class Simulation:
 
             elif turn == player_2_tile:
                 if len(player_2_valid_moves) > 0:
-                    player_2_move: TPosition = self.__get_computer_move(
-                        board, player_2_tile
-                    )
+                    move_algorithm = self.__get_move_algorithm_for_player(player_2_tile)
+                    player_2_move: TPosition = move_algorithm(board, player_2_tile)
                     self.__make_move(
                         board, player_2_tile, player_2_move[0], player_2_move[1]
                     )
@@ -100,14 +161,6 @@ class Simulation:
                 elif board[row][col] == O:
                     o_score += 1
         return {X: x_score, O: o_score}
-
-    def __print_scores(
-        self, score_dict: TScoreDict, player_1_tile: TTile, player_2_tile: TTile
-    ) -> None:
-        """Print the result of a round"""
-        print(
-            f"{player_1_tile} scored {score_dict[player_1_tile]} points. {player_2_tile} scored {score_dict[player_2_tile]} points."
-        )
 
     def __get_tiles_to_flip(
         self, board: TBoard, tile: TTile, placed_row: int, placed_col: int
@@ -169,34 +222,102 @@ class Simulation:
         for x, y in tiles_to_flip:
             board[x][y] = tile
 
-    def __get_computer_move(self, board: TBoard, computer_tile: TTile) -> TPosition:
-        """Determine the move for computer"""
-        possible_moves: list[TPosition] = self.__get_valid_moves(board, computer_tile)
+    # ***** Different strategies to move *****
+    # ****************************************
+    # 1. __get_corner_then_highest_score_move:
+    # Take a corner move if available. If there’s no corner, find the highest-scoring move.
+    #
+    # 2. __get_corner_then_side_then_highest_score_move:
+    # Take a corner move if available. If there’s no corner, take a space on the side.
+    # If no sides are available, use the regular find the highest-scoring move.
+    #
+    # 3. __get_random_move:
+    # Randomly choose a valid move to make.
+    #
+    # 4. __get_lowest_score_move:
+    # Take the position that will result in the fewest tiles being flipped.
 
-        # Randomize the order of moves:
-        # - To make the AI less predictable (avoid player memorizing the moves)
-        # - Needed because the implementation below always choose the first best move
-        #   (when there are multiple moves producing the same score)
+    def __get_corner_then_highest_score_move(
+        self, board: TBoard, tile: TTile
+    ) -> TPosition:
+        possible_moves: list[TPosition] = self.__get_valid_moves(board, tile)
         random.shuffle(possible_moves)
+
+        # Always go for a corner if possible
+        # (cannot be flipped, control the edges and diagonal)
+        for row, col in possible_moves:
+            if Board.is_at_corner(row, col):
+                return (row, col)
 
         # Find the highest-scoring move
         best_score: int = -1
         best_move: TPosition | None = None
         for row, col in possible_moves:
-            # Go for a corner right away if possible
-            # (cannot be flipped, control the edges and diagonal)
+            # Make the "virtual" move to get the score
+            cloned_board: TBoard = Board.clone(board)
+            self.__make_move(cloned_board, tile, row, col)
+            score_dict: TScoreDict = self.__get_scores(cloned_board)
+            score: int = score_dict[tile]
+
+            if score > best_score:
+                best_move = (row, col)
+                best_score = score
+
+        return best_move
+
+    def __get_corner_then_side_then_highest_score_move(
+        self, board: TBoard, tile: TTile
+    ) -> TPosition:
+        possible_moves: list[TPosition] = self.__get_valid_moves(board, tile)
+        random.shuffle(possible_moves)
+
+        # Always go for a corner if possible
+        # (cannot be flipped, control the edges and diagonal)
+        for row, col in possible_moves:
             if Board.is_at_corner(row, col):
                 return (row, col)
 
+        # Go for a side next if cannot move to a corner
+        for row, col in possible_moves:
+            if Board.is_at_side(row, col):
+                return (row, col)
+
+        # Find the highest-scoring move
+        best_score: int = -1
+        best_move: TPosition | None = None
+        for row, col in possible_moves:
             # Make the "virtual" move to get the score
             cloned_board: TBoard = Board.clone(board)
-            self.__make_move(cloned_board, computer_tile, row, col)
+            self.__make_move(cloned_board, tile, row, col)
             score_dict: TScoreDict = self.__get_scores(cloned_board)
-            computer_score: int = score_dict[computer_tile]
+            score: int = score_dict[tile]
 
-            # Update best score and best move
-            if computer_score > best_score:
+            if score > best_score:
                 best_move = (row, col)
-                best_score = computer_score
+                best_score = score
 
         return best_move
+
+    def __get_random_move(self, board: TBoard, tile: TTile) -> TPosition:
+        possible_moves: list[TPosition] = self.__get_valid_moves(board, tile)
+        return random.choice(possible_moves)
+
+    def __get_lowest_score_move(self, board: TBoard, tile: TTile) -> TPosition:
+        possible_moves: list[TPosition] = self.__get_valid_moves(board, tile)
+        random.shuffle(possible_moves)
+
+        # Find the lowest-scoring move
+        worst_score: int = float("inf")
+        worst_move: TPosition | None = None
+        for row, col in possible_moves:
+            # Make the "virtual" move to get the score
+            cloned_board: TBoard = Board.clone(board)
+            self.__make_move(cloned_board, tile, row, col)
+            score_dict: TScoreDict = self.__get_scores(cloned_board)
+            score: int = score_dict[tile]
+
+            if score < worst_score:
+                worst_move = (row, col)
+                worst_score = score
+
+        return worst_move
