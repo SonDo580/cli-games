@@ -99,7 +99,9 @@ class Game:
                     self.__print_scores(score_dict, player_tile, computer_tile)
 
                     # Computer move
-                    computer_move: TPosition = self.__get_computer_move(board, computer_tile)
+                    computer_move: TPosition = self.__get_computer_move(
+                        board, computer_tile
+                    )
                     self.__make_move(
                         board, computer_tile, computer_move[0], computer_move[1]
                     )
@@ -278,15 +280,16 @@ class Game:
         #   (when there are multiple moves producing the same score)
         random.shuffle(possible_moves)
 
+        # Go for a corner right away if possible
+        # (cannot be flipped, control the edges and diagonal)
+        for row, col in possible_moves:
+            if Board.is_on_corner(row, col):
+                return (row, col)
+
         # Find the highest-scoring move
         best_score: int = -1
         best_move: TPosition | None = None
         for row, col in possible_moves:
-            # Go for a corner right away if possible
-            # (cannot be flipped, control the edges and diagonal)
-            if Board.is_on_corner(row, col):
-                return (row, col)
-
             # Make the "virtual" move to get the score
             cloned_board: TBoard = Board.clone(board)
             self.__make_move(cloned_board, computer_tile, row, col)
