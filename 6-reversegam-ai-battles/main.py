@@ -1,9 +1,9 @@
-from Game import Game
+from Simulation import Simulation
 
 
 def main():
-    game = Game()
-    game.start()
+    simulation = Simulation()
+    simulation.start()
 
 
 if __name__ == "__main__":

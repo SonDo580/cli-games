@@ -1,12 +1,10 @@
-from _types import TTurn, TTile, TMark, TDirection, TPlayerChoice
+from _types import TTile, TMark, TDirection
 
-COMPUTER: TTurn = "computer"
-PLAYER: TTurn = "player"
+NUM_ROUNDS = 250
 
 X: TTile = "X"
 O: TTile = "O"
 EMPTY: TMark = " "
-HINT_MARK: TMark = "."
 
 SIDE: int = 8  # SIDE < 10 and SIDE % 2 == 0
 MAX_ROW_DIGITS: int = len(str(SIDE))
@@ -22,6 +20,3 @@ DIRECTIONS: list[TDirection] = (
     (-1, 0),  # north
     (-1, 1),  # north east
 )
-
-QUIT_CHOICE: TPlayerChoice = "q"
-HINT_CHOICE: TPlayerChoice = "h"
